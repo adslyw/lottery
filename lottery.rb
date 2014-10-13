@@ -6,51 +6,83 @@ require 'csv'
 #CSV.open("./file.csv", "wb") do |csv|
 	#@his.each do |line|
 	#	csv << line
-	#end  
+	#end
 #end
 
-def	lottery(kind,date)
+def	lottery(kind,time=Time.now)
+	date = time.strftime('%F')
 	data = []
 	doc = Nokogiri::HTML(open("http://baidu.lecai.com/lottery/draw/list/#{kind}?d=#{date}"))
-	doc.search('tbody').each do |node| 
+	doc.search('tbody').each do |node|
 	  node.search('tr').each do |nd|
 		line = []
 		nd.content.split.each do |n|
 			line.push n
 		end
 		data.push line
-	  end   
+	  end
   end
   return data
 end
 
 def	to_screen(data,id= true)
-	data.each do  |d|
+	data.reverse.each do  |d|
 		if id
 			print d[1,6].join("\t"),"\n"
 		else
 			print d[2,5].join("\t"),"\n"
-		end		
+		end
 	end
 end
 
 
 class Counter
-  def initialize(name,count=0)  
-    # Instance variables  
+  def initialize(name,count=0)
+    # Instance variables
     @count= count
-    @name = name  
-  end 
+    @name = name
+  end
   def hit
-	@count = @count + 1
+		@count = @count + 1
   end
   def count
-	@count
+		@count
   end
+	def <=> (other)
+		self.count <=> other.count
+	end
+end
+class Fixnum
+	def minutes
+		self * 60
+	end
+	alias :minute :minutes
+	def hours
+		self * 60.minutes
+	end
+	alias :hour :hours
+	def days
+		self * 25.hours
+	end
+	alias :day :days
+	def weeks
+		self * 7.days
+	end
+	alias :week :weeks
+	def ago
+		Time.now - self
+	end
 end
 
-#23: guangdong 11/5
-to_screen(lottery( 23,'2014-10-11'),true)
+def fact(n)
+	Math.gamma(n+1)
+end
+def a(n,k)
+	fact(n)/fact(n-k)
+end
+def c(n,k)
+	a(n,k)/fact(k)
+end
 def count(data)
 	@counters = {
 		'01' => Counter.new('01'),
@@ -72,5 +104,13 @@ def count(data)
 		puts "#{key}\t #{ '*' * value.count}  #{ value.count}"
 	end
 end
-count(lottery( 23,'2014-10-11').flatten)
-count(lottery( 23,'2014-10-11').transpose[2])
+
+def run(time=Time.now)
+	to_screen(lottery(23,time),true)
+	count(lottery(23,time).flatten)
+	count(lottery(23,time).transpose[2])
+	puts a(11,5)
+	puts c(11,5)
+end
+
+run 
