@@ -8,7 +8,6 @@ require 'csv'
 	#	csv << line
 	#end
 #end
-
 def	lottery(kind,time=Time.now)
 	date = time.strftime('%F')
 	data = []
@@ -109,8 +108,8 @@ def run(time=Time.now)
 	to_screen(lottery(23,time),true)
 	count(lottery(23,time).flatten)
 	count(lottery(23,time).transpose[2])
-	puts a(11,5)
-	puts c(11,5)
+	#puts a(11,5)
+	#puts c(11,5)
 end
 
-run 
+run
