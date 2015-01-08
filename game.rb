@@ -16,7 +16,8 @@ class Game
   end
   def update_data(time = Time.now)
     date = time.strftime('%F')
-    doc = Nokogiri::HTML(open("http://baidu.lecai.com/lottery/draw/list/#{@kind}?d=#{date}"))
+    data_source = "http://baidu.lecai.com/lottery/draw/list/#{@kind}?d=#{date}"
+    doc = Nokogiri::HTML(open(data_source))
     doc.search('tbody').each do |node|
       node.search('tr').each do |nd|
       line = []
